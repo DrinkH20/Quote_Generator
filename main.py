@@ -14,12 +14,6 @@ Config.set('graphics', 'left', 20)
 Config.set('graphics', 'top', 50)
 username = input("What is your name: ")
 comp_mon = int(input("What monitor will you be using? "))
-texting = input("Is this going for texting? y/n ")
-
-if texting == "y":
-    texting = True
-else:
-    texting = False
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
