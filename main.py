@@ -13,8 +13,48 @@ Config.set('graphics', 'resizable', 1)
 Config.set('graphics', 'left', 20)
 Config.set('graphics', 'top', 50)
 username = input("What is your name: ")
+comp_mon = int(input("What monitor will you be using? "))
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
+
+import mss
+import mss.tools
+import os
+
+
+def get_screenshot(com_mon=1):
+    with mss.mss() as sct:
+        # Get information of monitor 2
+        monitor_number = com_mon
+        mon = sct.monitors[monitor_number]
+
+        # The screen part to capture
+        monitor = {
+            "top": mon["top"],
+            "left": mon["left"],
+            "width": mon["width"],
+            "height": mon["height"],
+            "mon": monitor_number,
+        }
+        output = "screenshot_1.png".format(**monitor)
+
+        # Determine the path to the "screenshot" folder
+        path_to_screenshot_folder = os.path.join(os.path.dirname(__file__), "screenshot")
+
+        # Create the "screenshot" folder if it doesn't exist
+        os.makedirs(path_to_screenshot_folder, exist_ok=True)
+
+        # Construct the full output path for the screenshot
+        output_path = os.path.join(path_to_screenshot_folder, output)
+
+        # Grab the data
+        sct_img = sct.grab(monitor)
+
+        # Save the screenshot to the specified path
+        screenshot = mss.tools.to_png(sct_img.rgb, sct_img.size, output=output_path)
+
+        # print("Screenshot saved to:", output_path)
+        return output_path
 
 
 class MyApp(App):
@@ -62,11 +102,12 @@ class MyApp(App):
     def callback1(self, instance):
         print("Quote Loading")
         # The callback function is called when the button is pressed
-        screenshot = pyautogui.screenshot()
-        screenshot.save('screenshot\screenshot_1.png')
+        # screenshot = pyautogui.screenshot()
+        # screenshot.save('screenshot\screenshot_1.png')
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-        page_info = pytesseract.image_to_string(Image.open('screenshot\screenshot_1.png'))
+        # Using this as the screenshot function instead because it can do either monitors
+        page_info = pytesseract.image_to_string(Image.open(get_screenshot(comp_mon)))
 
         def extract_data(filename):
             # Simulate sample data instead of using a screenshot
