@@ -1,4 +1,4 @@
-import pyautogui
+# import pyautogui
 from PIL import Image
 import pytesseract
 import pyperclip
@@ -51,7 +51,7 @@ def get_screenshot(com_mon=1):
         sct_img = sct.grab(monitor)
 
         # Save the screenshot to the specified path
-        screenshot = mss.tools.to_png(sct_img.rgb, sct_img.size, output=output_path)
+        mss.tools.to_png(sct_img.rgb, sct_img.size, output=output_path)
 
         # print("Screenshot saved to:", output_path)
         return output_path
@@ -72,11 +72,10 @@ class MyApp(App):
         self.beds_input = TextInput(hint_text='Enter Beds', font_size=14)
         self.baths_input = TextInput(hint_text='Enter Baths', font_size=14)
         self.sqft_input = TextInput(hint_text='Enter Sqft', font_size=14)
+        input_layout.add_widget(self.sqft_input)
         input_layout.add_widget(self.beds_input)
         input_layout.add_widget(self.baths_input)
-        input_layout.add_widget(self.sqft_input)
         input_layout.add_widget(self.type_input)
-
 
         # Add the horizontal layout to the main layout
         main_layout.add_widget(input_layout)
@@ -378,7 +377,6 @@ We look forward to cleaning for you!
         clean_sqft = self.sqft_input.text
         clean_beds = self.beds_input.text
         clean_baths = self.baths_input.text
-
 
         def calc_price(sqft, beds, baths, type_clean, name_first):
             elite = 250
