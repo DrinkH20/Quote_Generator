@@ -1,3 +1,4 @@
+from scripts import get_title, get_quote, get_quote_manual, get_title_manual
 from PIL import Image
 import pytesseract
 import pyperclip
@@ -100,8 +101,6 @@ class MyApp(App):
     def callback1(self, instance):
         print("Quote Loading")
         # The callback function is called when the button is pressed
-        # screenshot = pyautogui.screenshot()
-        # screenshot.save('screenshot\screenshot_1.png')
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
         # Using this as the screenshot function instead because it can do either monitors
@@ -158,7 +157,6 @@ class MyApp(App):
             if i != "WANTS" and i != "last_name" and i != "first_name":
                 for z in word:
                     before_revised_word = revised_word
-                    # print(revised_word)
                     try:
                         revised_word += z
                         z = int(z)
@@ -243,102 +241,10 @@ class MyApp(App):
             title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
             pyperclip.copy(title)
             time.sleep(0.4)
-            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first)
+            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
-
-        # This is all the different scripts
-        def get_title(sqft, beds, baths, part_list, last, first):
-            sqft = int(sqft)
-            sqft = round(sqft/10)*10
-            beds = int(beds)
-            try:
-                baths = int(baths)
-            except ValueError:
-                baths = float(baths)
-
-            if beds <= 1 >= baths:
-                scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Bed, {baths} Bath",
-                           f"{last}, {first} - Move Clean {sqft}, {beds} Bed, {baths} Bath",
-                           f"{last}, {first} - Weekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                           f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                           f"{last}, {first} - Monthly Cleans {sqft}, {beds} Bed, {baths} Bath"]
-            elif beds > 1 < baths:
-                scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Beds, {baths} Baths",
-                           f"{last}, {first} - Move Clean {sqft}, {beds} Beds, {baths} Baths",
-                           f"{last}, {first} - Weekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                           f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                           f"{last}, {first} - Monthly Cleans {sqft}, {beds} Beds, {baths} Baths"]
-            elif beds > 1 >= baths:
-                scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Beds, {baths} Bath",
-                           f"{last}, {first} - Move Clean {sqft}, {beds} Beds, {baths} Bath",
-                           f"{last}, {first} - Weekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                           f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                           f"{last}, {first} - Monthly Cleans {sqft}, {beds} Beds, {baths} Bath"]
-            else:
-                scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Bed, {baths} Baths",
-                           f"{last}, {first} - Move Clean {sqft}, {beds} Bed, {baths} Baths",
-                           f"{last}, {first} - Weekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                           f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                           f"{last}, {first} - Monthly Cleans {sqft}, {beds} Bed, {baths} Baths"]
-
-            return scripts[part_list]
-
-        def get_quote(initial, recuring, part_list, name="there"):
-            scripts = [f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your one-time clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your moving clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and weekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and biweekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and monthly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-"""]
-
-            return scripts[part_list]
 
         scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
         list_for_scripts = scripts_choose.index(clean_type)
@@ -363,13 +269,12 @@ We look forward to cleaning for you!
 
     def callback2(self, instance):
         print("Quote Loading")
-        # print(keywords, revised)
 
         # clean_type = "ONETIME"
         clean_sqft = 0
         clean_beds = 0
         clean_baths = 0
-        clean_first_name = "There"
+        clean_first_name = "there"
 
         clean_type = self.type_input.text
         clean_sqft = self.sqft_input.text
@@ -400,105 +305,13 @@ We look forward to cleaning for you!
                     ongoing = 140
             if elite < 250:
                 elite = 250
-            title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts)
+            title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
             pyperclip.copy(title)
             time.sleep(0.4)
-            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first)
+            main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
-
-        # This is all the different scripts
-        def get_title(sqft, beds, baths, part_list):
-            sqft = int(sqft)
-            sqft = round(sqft / 10) * 10
-            beds = int(beds)
-            try:
-                baths = int(baths)
-            except ValueError:
-                baths = float(baths)
-
-            if beds <= 1 >= baths:
-                scripts = [f"One Time Clean {sqft}, {beds} Bed, {baths} Bath",
-                           f"Move Clean {sqft}, {beds} Bed, {baths} Bath",
-                           f"Weekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                           f"Biweekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                           f"Monthly Cleans {sqft}, {beds} Bed, {baths} Bath"]
-            elif beds > 1 < baths:
-                scripts = [f"One Time Clean {sqft}, {beds} Beds, {baths} Baths",
-                           f"Move Clean {sqft}, {beds} Beds, {baths} Baths",
-                           f"Weekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                           f"Biweekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                           f"Monthly Cleans {sqft}, {beds} Beds, {baths} Baths"]
-            elif beds > 1 >= baths:
-                scripts = [f"One Time Clean {sqft}, {beds} Beds, {baths} Bath",
-                           f"Move Clean {sqft}, {beds} Beds, {baths} Bath",
-                           f"Weekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                           f"Biweekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                           f"Monthly Cleans {sqft}, {beds} Beds, {baths} Bath"]
-            else:
-                scripts = [f"One Time Clean {sqft}, {beds} Bed, {baths} Baths",
-                           f"Move Clean {sqft}, {beds} Bed, {baths} Baths",
-                           f"Weekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                           f"Biweekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                           f"Monthly Cleans {sqft}, {beds} Bed, {baths} Baths"]
-
-            return scripts[part_list]
-
-        def get_quote(initial, recuring, part_list, name="there"):
-            scripts = [f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your one-time clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your moving clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and weekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and biweekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and monthly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-    """]
-
-            return scripts[part_list]
 
         scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
         print(clean_type)
