@@ -1,4 +1,3 @@
-# import pyautogui
 from PIL import Image
 import pytesseract
 import pyperclip
