@@ -1,4 +1,4 @@
-from scripts import get_title, get_quote, get_quote_manual, get_title_manual
+from scripts import get_title, get_quote, get_quote_manual, get_title_manual, get_quote_text
 from PIL import Image
 import pytesseract
 import pyperclip
@@ -14,6 +14,13 @@ Config.set('graphics', 'left', 20)
 Config.set('graphics', 'top', 50)
 username = input("What is your name: ")
 comp_mon = int(input("What monitor will you be using? "))
+texting = input("Is this going for texting? y/n ")
+
+if texting == "y":
+    texting = True
+else:
+    texting = False
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 
@@ -135,7 +142,7 @@ class MyApp(App):
                         k -= 1
 
                     k -= 1
-                    while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == ",":
+                    while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == "," or data[data.index(keyword) + k - 1] == " ":
                         k -= 1
 
                     # i -= 1
@@ -238,10 +245,15 @@ class MyApp(App):
                     ongoing = 140
             if elite < 250:
                 elite = 250
-            title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
-            pyperclip.copy(title)
-            time.sleep(0.4)
-            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+
+            if not texting:
+                title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
+                pyperclip.copy(title)
+                time.sleep(0.4)
+            if texting:
+                main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
+            else:
+                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
@@ -306,10 +318,15 @@ class MyApp(App):
                     ongoing = 140
             if elite < 250:
                 elite = 250
-            title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
-            pyperclip.copy(title)
-            time.sleep(0.4)
-            main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
+
+            if not texting:
+                title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
+                pyperclip.copy(title)
+                time.sleep(0.4)
+            if texting:
+                main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
+            else:
+                main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing

@@ -9,29 +9,29 @@ def get_title(sqft, beds, baths, part_list, last, first):
         baths = float(baths)
 
     if beds <= 1 >= baths:
-        scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Bed, {baths} Bath",
-                   f"{last}, {first} - Move Clean {sqft}, {beds} Bed, {baths} Bath",
-                   f"{last}, {first} - Weekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                   f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                   f"{last}, {first} - Monthly Cleans {sqft}, {beds} Bed, {baths} Bath"]
+        scripts = [f"{last}, {first} - One Time Clean {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"{last}, {first} - Move Clean {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"{last}, {first} - Weekly Cleans {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"{last}, {first} - Biweekly Cleans {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"{last}, {first} - Monthly Cleans {sqft} sqft, {beds} Bed, {baths} Bath"]
     elif beds > 1 < baths:
-        scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Beds, {baths} Baths",
-                   f"{last}, {first} - Move Clean {sqft}, {beds} Beds, {baths} Baths",
-                   f"{last}, {first} - Weekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                   f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                   f"{last}, {first} - Monthly Cleans {sqft}, {beds} Beds, {baths} Baths"]
+        scripts = [f"{last}, {first} - One Time Clean {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"{last}, {first} - Move Clean {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"{last}, {first} - Weekly Cleans {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"{last}, {first} - Biweekly Cleans {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"{last}, {first} - Monthly Cleans {sqft} sqft, {beds} Beds, {baths} Baths"]
     elif beds > 1 >= baths:
-        scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Beds, {baths} Bath",
-                   f"{last}, {first} - Move Clean {sqft}, {beds} Beds, {baths} Bath",
-                   f"{last}, {first} - Weekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                   f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                   f"{last}, {first} - Monthly Cleans {sqft}, {beds} Beds, {baths} Bath"]
+        scripts = [f"{last}, {first} - One Time Clean {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"{last}, {first} - Move Clean {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"{last}, {first} - Weekly Cleans {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"{last}, {first} - Biweekly Cleans {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"{last}, {first} - Monthly Cleans {sqft} sqft, {beds} Beds, {baths} Bath"]
     else:
-        scripts = [f"{last}, {first} - One Time Clean {sqft}, {beds} Bed, {baths} Baths",
-                   f"{last}, {first} - Move Clean {sqft}, {beds} Bed, {baths} Baths",
-                   f"{last}, {first} - Weekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                   f"{last}, {first} - Biweekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                   f"{last}, {first} - Monthly Cleans {sqft}, {beds} Bed, {baths} Baths"]
+        scripts = [f"{last}, {first} - One Time Clean {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"{last}, {first} - Move Clean {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"{last}, {first} - Weekly Cleans {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"{last}, {first} - Biweekly Cleans {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"{last}, {first} - Monthly Cleans {sqft} sqft, {beds} Bed, {baths} Baths"]
 
     return scripts[part_list]
 
@@ -101,29 +101,29 @@ def get_title_manual(sqft, beds, baths, part_list):
         baths = float(baths)
 
     if beds <= 1 >= baths:
-        scripts = [f"One Time Clean {sqft}, {beds} Bed, {baths} Bath",
-                   f"Move Clean {sqft}, {beds} Bed, {baths} Bath",
-                   f"Weekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                   f"Biweekly Cleans {sqft}, {beds} Bed, {baths} Bath",
-                   f"Monthly Cleans {sqft}, {beds} Bed, {baths} Bath"]
+        scripts = [f"One Time Clean {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"Move Clean {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"Weekly Cleans {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"Biweekly Cleans {sqft} sqft, {beds} Bed, {baths} Bath",
+                   f"Monthly Cleans {sqft} sqft, {beds} Bed, {baths} Bath"]
     elif beds > 1 < baths:
-        scripts = [f"One Time Clean {sqft}, {beds} Beds, {baths} Baths",
-                   f"Move Clean {sqft}, {beds} Beds, {baths} Baths",
-                   f"Weekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                   f"Biweekly Cleans {sqft}, {beds} Beds, {baths} Baths",
-                   f"Monthly Cleans {sqft}, {beds} Beds, {baths} Baths"]
+        scripts = [f"One Time Clean {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"Move Clean {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"Weekly Cleans {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"Biweekly Cleans {sqft} sqft, {beds} Beds, {baths} Baths",
+                   f"Monthly Cleans {sqft} sqft, {beds} Beds, {baths} Baths"]
     elif beds > 1 >= baths:
-        scripts = [f"One Time Clean {sqft}, {beds} Beds, {baths} Bath",
-                   f"Move Clean {sqft}, {beds} Beds, {baths} Bath",
-                   f"Weekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                   f"Biweekly Cleans {sqft}, {beds} Beds, {baths} Bath",
-                   f"Monthly Cleans {sqft}, {beds} Beds, {baths} Bath"]
+        scripts = [f"One Time Clean {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"Move Clean {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"Weekly Cleans {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"Biweekly Cleans {sqft} sqft, {beds} Beds, {baths} Bath",
+                   f"Monthly Cleans {sqft} sqft, {beds} Beds, {baths} Bath"]
     else:
-        scripts = [f"One Time Clean {sqft}, {beds} Bed, {baths} Baths",
-                   f"Move Clean {sqft}, {beds} Bed, {baths} Baths",
-                   f"Weekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                   f"Biweekly Cleans {sqft}, {beds} Bed, {baths} Baths",
-                   f"Monthly Cleans {sqft}, {beds} Bed, {baths} Baths"]
+        scripts = [f"One Time Clean {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"Move Clean {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"Weekly Cleans {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"Biweekly Cleans {sqft} sqft, {beds} Bed, {baths} Baths",
+                   f"Monthly Cleans {sqft} sqft, {beds} Bed, {baths} Baths"]
 
     return scripts[part_list]
 
@@ -180,4 +180,49 @@ Please let me know if you would like to get on the schedule and if you have any 
 We look forward to cleaning for you!
 {username}
     """]
+    return scripts[part_list]
+
+
+def get_quote_text(initial, recuring, part_list, name="there", username="", sqft=0, beds=0, baths=0):
+    scripts = [f"""Hi {name}! 
+
+{username} with Clean Affinity here! 
+Thank you for reaching out! 
+
+Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your one-time clean will be ${initial} with our March special. 
+
+Is this something I can get on the schedule for you?
+""", f"""Hi {name}! 
+
+{username} with Clean Affinity here! 
+Thank you for reaching out! 
+
+Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your moving clean will be ${initial} with our March special. 
+
+Is this something I can get on the schedule for you?
+""", f"""Hi {name}! 
+
+{username} with Clean Affinity here! 
+Thank you for reaching out! 
+
+Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following weekly cleans will be ${recuring} with our March special. 
+
+Is this something I can get on the schedule for you?
+""", f"""Hi {name}! 
+
+{username} with Clean Affinity here! 
+Thank you for reaching out! 
+
+Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following biweekly cleans will be ${recuring} with our March special. 
+
+Is this something I can get on the schedule for you?
+""", f"""Hi {name}! 
+
+{username} with Clean Affinity here! 
+Thank you for reaching out! 
+
+Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following monthly cleans will be ${recuring} with our March special. 
+
+Is this something I can get on the schedule for you?
+"""]
     return scripts[part_list]
