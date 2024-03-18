@@ -246,14 +246,13 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
-            if not texting:
-                title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
-                pyperclip.copy(title)
-                time.sleep(0.4)
-            if texting:
-                main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
-            else:
-                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            text_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            pyperclip.copy(text_info)
+            time.sleep(0.4)
+            title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
+            pyperclip.copy(title)
+            time.sleep(0.4)
+            main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
@@ -319,14 +318,13 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
-            if not texting:
-                title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
-                pyperclip.copy(title)
-                time.sleep(0.4)
-            if texting:
-                main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
-            else:
-                main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            text_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            pyperclip.copy(text_info)
+            time.sleep(0.4)
+            title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
+            pyperclip.copy(title)
+            time.sleep(0.4)
+            main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing

@@ -184,41 +184,31 @@ We look forward to cleaning for you!
 
 
 def get_quote_text(initial, recuring, part_list, name="there", username="", sqft=0, beds=0, baths=0):
-    scripts = [f"""Hi {name}! 
-
-{username} with Clean Affinity here! 
+    scripts = [f"""Hi {name}! {username} with Clean Affinity here! 
 Thank you for reaching out! 
 
 Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your one-time clean will be ${initial} with our March special. 
 
 Is this something I can get on the schedule for you?
-""", f"""Hi {name}! 
-
-{username} with Clean Affinity here! 
+""", f"""Hi {name}! {username} with Clean Affinity here! 
 Thank you for reaching out! 
 
 Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your moving clean will be ${initial} with our March special. 
 
 Is this something I can get on the schedule for you?
-""", f"""Hi {name}! 
-
-{username} with Clean Affinity here! 
+""", f"""Hi {name}! {username} with Clean Affinity here! 
 Thank you for reaching out! 
 
 Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following weekly cleans will be ${recuring} with our March special. 
 
 Is this something I can get on the schedule for you?
-""", f"""Hi {name}! 
-
-{username} with Clean Affinity here! 
+""", f"""Hi {name}! {username} with Clean Affinity here! 
 Thank you for reaching out! 
 
 Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following biweekly cleans will be ${recuring} with our March special. 
 
 Is this something I can get on the schedule for you?
-""", f"""Hi {name}! 
-
-{username} with Clean Affinity here! 
+""", f"""Hi {name}! {username} with Clean Affinity here! 
 Thank you for reaching out! 
 
 Based on your address it looks like {sqft} sqft, with {beds} beds and {baths} baths. If that’s correct, your initial clean will be ${initial} and the following monthly cleans will be ${recuring} with our March special. 
