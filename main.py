@@ -284,6 +284,7 @@ class MyApp(App):
         def calc_price(sqft, beds, baths, type_clean, name_first):
             elite = 250
             ongoing = 140
+
             # These are the base prices that are the minimum cost of cleans
             price_sqft = calc_sqft_price(int(sqft))
             # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
