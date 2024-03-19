@@ -247,6 +247,8 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
+
+
             text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
                                        clean_beds, clean_baths)
             pyperclip.copy(text_info)
@@ -254,8 +256,6 @@ class MyApp(App):
             title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
             pyperclip.copy(title)
             time.sleep(0.4)
-            text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
-            pyperclip.copy(text_info)
             main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
