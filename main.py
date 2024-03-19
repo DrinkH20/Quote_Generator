@@ -86,11 +86,18 @@ class MyApp(App):
 
         # Create buttons with placeholders for callback functions
 
+        def change_button_color(btn, pressed):
+            if btn.background_color == [1, 0, 0, 1]:
+                btn.background_color = (1, 1, 1, 1)
+            else:
+                btn.background_color = (1, 0, 0, 1)
+
         btn2 = Button(text='Manually Generate', font_size=14)
         btn2.bind(on_press=self.callback2)
         button_layout.add_widget(btn2)
 
         btn1 = Button(text='Get From Email', font_size=14)
+        btn1.bind(on_press=lambda x: change_button_color(btn1, x))
         btn1.bind(on_press=self.callback1)
         button_layout.add_widget(btn1)
 
@@ -240,13 +247,16 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
-            text_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                       clean_beds, clean_baths)
             pyperclip.copy(text_info)
             time.sleep(0.4)
             title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
             pyperclip.copy(title)
             time.sleep(0.4)
-            main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
+            text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
+            pyperclip.copy(text_info)
+            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
@@ -312,13 +322,14 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
-            text_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                       clean_beds, clean_baths)
             pyperclip.copy(text_info)
             time.sleep(0.4)
             title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
             pyperclip.copy(title)
             time.sleep(0.4)
-            main_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft, clean_beds, clean_baths)
+            main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
