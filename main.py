@@ -4,7 +4,6 @@ import pytesseract
 import pyperclip
 import time
 from kivy.app import App
-from kivy.uix.button import Button
 from kivy.config import Config
 Config.set('graphics', 'width', '200')
 Config.set('graphics', 'height', '100')
@@ -12,12 +11,8 @@ Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'resizable', 1)
 Config.set('graphics', 'left', 20)
 Config.set('graphics', 'top', 50)
-username = input("What is your name: ")
-comp_mon = int(input("What monitor will you be using? "))
-
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.textinput import TextInput
-
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
 import mss
 import mss.tools
 import os
@@ -58,55 +53,21 @@ def get_screenshot(com_mon=1):
         return output_path
 
 
-class MyApp(App):
-    def build(self):
-        self.title = 'Leads Quote Generator'
-
-        # Create the main layout
-        main_layout = BoxLayout(orientation='vertical')
-
-        # Create a layout for horizontal alignment of beds, baths, sqft
-        input_layout = BoxLayout(orientation='horizontal', padding=0, spacing=0)
-
-        # Add text input fields for user input
-        self.type_input = TextInput(hint_text='Enter Clean Type', font_size=14)
-        self.beds_input = TextInput(hint_text='Enter Beds', font_size=14)
-        self.baths_input = TextInput(hint_text='Enter Baths', font_size=14)
-        self.sqft_input = TextInput(hint_text='Enter Sqft', font_size=14)
-        input_layout.add_widget(self.sqft_input)
-        input_layout.add_widget(self.beds_input)
-        input_layout.add_widget(self.baths_input)
-        input_layout.add_widget(self.type_input)
-
-        # Add the horizontal layout to the main layout
-        main_layout.add_widget(input_layout)
-
-        # Create a layout for vertical alignment of buttons
-        button_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
-
-        # Create buttons with placeholders for callback functions
-
-        def change_button_color(btn, pressed):
-            if btn.background_color == [1, 0, 0, 1]:
-                btn.background_color = (1, 1, 1, 1)
+class MyLayout(Screen):
+    def change_button_color(self, btn, pressed=0):
+        if btn == "1":
+            if self.ids.button_1.background_color == [1, 0, 0, 1]:
+                self.ids.button_1.background_color = (1, 1, 1, 1)
             else:
-                btn.background_color = (1, 0, 0, 1)
-
-        btn2 = Button(text='Manually Generate', font_size=14)
-        btn2.bind(on_press=self.callback2)
-        button_layout.add_widget(btn2)
-
-        btn1 = Button(text='Get From Email', font_size=14)
-        btn1.bind(on_press=lambda x: change_button_color(btn1, x))
-        btn1.bind(on_press=self.callback1)
-        button_layout.add_widget(btn1)
-
-        # Add the vertical layout to the main layout
-        main_layout.add_widget(button_layout)
-
-        return main_layout
+                self.ids.button_1.background_color = (1, 0, 0, 1)
+        elif btn == "2":
+            if self.ids.button_2.background_color == [1, 0, 0, 1]:
+                self.ids.button_2.background_color = (1, 1, 1, 1)
+            else:
+                self.ids.button_2.background_color = (1, 0, 0, 1)
 
     def callback1(self, instance):
+        print(username, comp_mon)
         print("Quote Loading")
         # The callback function is called when the button is pressed
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -247,8 +208,6 @@ class MyApp(App):
             if elite < 250:
                 elite = 250
 
-
-
             text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
                                        clean_beds, clean_baths)
             pyperclip.copy(text_info)
@@ -291,10 +250,10 @@ class MyApp(App):
         clean_baths = 0
         clean_first_name = "there"
 
-        clean_type = self.type_input.text
-        clean_sqft = self.sqft_input.text
-        clean_beds = self.beds_input.text
-        clean_baths = self.baths_input.text
+        clean_type = self.ids.type_input.text
+        clean_sqft = self.ids.sqft_input.text
+        clean_beds = self.ids.beds_input.text
+        clean_baths = self.ids.baths_input.text
 
         def calc_price(sqft, beds, baths, type_clean, name_first):
             elite = 250
@@ -355,6 +314,31 @@ class MyApp(App):
             return sqft_price
 
         calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
+
+
+class SettingWindow(Screen):
+    def update(self, btn):
+        global username
+        global comp_mon
+        username = self.ids.username_input.text
+        comp_mon = self.ids.screen_input.text
+        comp_mon = int(comp_mon)
+    pass
+
+
+class WindowManage(ScreenManager):
+    pass
+
+
+kv = Builder.load_file('my.kv')
+username = input("What is your name: ")
+comp_mon = int(input("What monitor will you be using? "))
+
+
+class MyApp(App):
+    def build(self):
+        self.title = 'Leads Quote Generator'
+        return kv
 
 
 if __name__ == "__main__":

@@ -1,0 +1,111 @@
+WindowManage:
+    MyLayout:
+    SettingWindow:
+
+<MyLayout>
+    name: "main"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 0
+        spacing: 0
+        size: root.width, root.height
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 0
+            spacing: 0
+            TextInput:
+                id: sqft_input
+                hint_text: "Enter Sqft"
+                font_size: 14
+            TextInput:
+                id: beds_input
+                hint_text: "Enter Beds"
+                font_size: 14
+            TextInput:
+                id: baths_input
+                hint_text: "Enter Baths"
+                font_size: 14
+
+            RelativeLayout:
+                # Create a container for the TextInput and Image
+                RelativeLayout:
+                    id: container
+                    orientation: 'vertical'  # Arrange widgets side-by-side
+                    size_hint_y: 1  # Stretch container vertically
+
+                    # Text input with same properties
+                    TextInput:
+                        id: type_input
+                        hint_text: "Enter Clean Type"
+                        font_size: 14
+                        size_hint_x: 1  # Stretch horizontally
+                        margin_x: None
+
+                    # Image with modified properties
+                    Button:
+                        id: settings
+                        pos_hint: {'right': 1, 'top': 1}
+                        size_hint_y: .5
+                        size_hint_x: .5
+                        background_color: 0, 0, 0, 0
+                        on_press: app.root.current = "settings"
+                        Image:
+                            source: 'settings-icon.png'
+                            width: self.parent.width
+                            size_hint_y: None
+                            size_hint_x: None
+                            y: self.parent.y
+                            x: self.parent.x
+                            size: self.parent.size
+                            stretch: True
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 0
+            spacing: 0
+            Button:
+                id: button_1
+                text: 'Manually Generate'
+                font_size: 14
+                on_press:
+                    root.change_button_color("1")
+                on_press: root.callback2(button_1)
+
+            Button:
+                id: button_2
+                text: 'Get From Email'
+                font_size: 14
+                on_press:
+                    root.change_button_color("2")
+                on_press: root.callback1(button_2)
+
+<SettingWindow>
+    name: "settings"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 0
+        spacing: 0
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 0
+            spacing: 0
+            TextInput:
+                id: screen_input
+                hint_text: "Enter Screen In Use"
+                font_size: 14
+            TextInput:
+                id: username_input
+                hint_text: "User"
+                font_size: 14
+            Button:
+                id: updated
+                text: 'Update'
+                font_size: 14
+                on_press: root.update(updated)
+
+        Button:
+            id: button_2
+            text: 'Back'
+            font_size: 14
+            on_press: app.root.current = "main"
