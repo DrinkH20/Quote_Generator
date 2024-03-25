@@ -67,7 +67,6 @@ class MyLayout(Screen):
                 self.ids.button_2.background_color = (1, 0, 0, 1)
 
     def callback1(self, instance):
-        print(username, comp_mon)
         print("Quote Loading")
         # The callback function is called when the button is pressed
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -150,12 +149,14 @@ class MyLayout(Screen):
                     else:
                         finished = True
                     rep += 1
-
-            if i == "BATH":
-                revised_word = int(revised_word)
-                if revised_word >= 10:
-                    revised_word = revised_word/10
-                revised_word = str(revised_word)
+            try:
+                if i == "BATH":
+                    revised_word = int(revised_word)
+                    if revised_word >= 10:
+                        revised_word = revised_word/10
+                    revised_word = str(revised_word)
+            except ValueError:
+                print("No Number Collected")
             revised.append(revised_word)
 
         keywords = list(info)
@@ -187,36 +188,40 @@ class MyLayout(Screen):
             elite = 250
             ongoing = 140
             # These are the base prices that are the minimum cost of cleans
-            price_sqft = calc_sqft_price(int(sqft))
+            try:
+                price_sqft = calc_sqft_price(int(sqft))
+                before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                if type_clean == 0:
+                    elite = before_price * 2.9 * 1.1 * .81
+                if type_clean == 1:
+                    elite = before_price * 2.9 * 1.1 * 1.15 * .81
+                if type_clean == 2:
+                    ongoing = before_price * .9 * .95
+                if type_clean == 3:
+                    ongoing = before_price * 1 * .95
+                if type_clean == 4:
+                    ongoing = before_price * 1.33 * .95
+
+                if type_clean == 2 or type_clean == 3 or type_clean == 4:
+                    elite = before_price * 2.5 * 1.103 * .65
+                    if ongoing < 140:
+                        ongoing = 140
+                if elite < 250:
+                    elite = 250
+
+                text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                           clean_beds, clean_baths)
+                pyperclip.copy(text_info)
+                time.sleep(0.4)
+                title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
+                pyperclip.copy(title)
+                time.sleep(0.4)
+                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+                pyperclip.copy(main_info)
+            except ValueError:
+                print("No Number collected")
             # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
-            before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
-            if type_clean == 0:
-                elite = before_price * 2.9 * 1.1 * .81
-            if type_clean == 1:
-                elite = before_price * 2.9 * 1.1 * 1.15 * .81
-            if type_clean == 2:
-                ongoing = before_price * .9 * .95
-            if type_clean == 3:
-                ongoing = before_price * 1 * .95
-            if type_clean == 4:
-                ongoing = before_price * 1.33 * .95
 
-            if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                elite = before_price * 2.5 * 1.103 * .65
-                if ongoing < 140:
-                    ongoing = 140
-            if elite < 250:
-                elite = 250
-
-            text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
-                                       clean_beds, clean_baths)
-            pyperclip.copy(text_info)
-            time.sleep(0.4)
-            title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
-            pyperclip.copy(title)
-            time.sleep(0.4)
-            main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
-            pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
 
@@ -323,6 +328,7 @@ class SettingWindow(Screen):
         username = self.ids.username_input.text
         comp_mon = self.ids.screen_input.text
         comp_mon = int(comp_mon)
+        print("Updated!")
     pass
 
 
