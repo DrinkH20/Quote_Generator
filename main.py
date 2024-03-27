@@ -236,7 +236,7 @@ class MyLayout(Screen):
                 sqft_price = 90
             elif sqft < 2601:
                 sqft_price = 120
-            elif sqft < 3500:
+            elif sqft < 3500.01:
                 sqft_price = 140
             elif sqft < 4200:
                 sqft_price = 160
@@ -299,7 +299,6 @@ class MyLayout(Screen):
             return elite, ongoing
 
         scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
-        print(clean_type)
         list_for_scripts = scripts_choose.index(clean_type.upper())
 
         def calc_sqft_price(sqft):
@@ -310,7 +309,7 @@ class MyLayout(Screen):
                 sqft_price = 90
             elif sqft < 2601:
                 sqft_price = 120
-            elif sqft < 3500:
+            elif sqft < 3500.01:
                 sqft_price = 140
             elif sqft < 4200:
                 sqft_price = 160
