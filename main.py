@@ -54,17 +54,26 @@ def get_screenshot(com_mon=1):
 
 
 class MyLayout(Screen):
-    def change_button_color(self, btn, pressed=0):
+    def change_button_color(self, btn, wrong_color=False):
         if btn == "1":
             if self.ids.button_1.background_color == [1, 0, 0, 1]:
                 self.ids.button_1.background_color = (1, 1, 1, 1)
             else:
                 self.ids.button_1.background_color = (1, 0, 0, 1)
+
+            if wrong_color:
+                print("Error")
+                self.ids.button_1.background_color = (1, 0, 1, 1)
+
         elif btn == "2":
             if self.ids.button_2.background_color == [1, 0, 0, 1]:
                 self.ids.button_2.background_color = (1, 1, 1, 1)
             else:
                 self.ids.button_2.background_color = (1, 0, 0, 1)
+
+            if wrong_color:
+                print("Error")
+                self.ids.button_2.background_color = (1, 0, 1, 1)
 
     def callback1(self, instance):
         print("Quote Loading")
@@ -119,70 +128,77 @@ class MyLayout(Screen):
 
         revised = []
 
-        for i in info:
-            word = info[i]
-            revised_word = ""
-            if i != "WANTS" and i != "last_name" and i != "first_name":
-                for z in word:
-                    before_revised_word = revised_word
-                    try:
-                        revised_word += z
-                        z = int(z)
-                    except ValueError:
-                        revised_word = before_revised_word
-            elif i == "WANTS":
-                finished = False
-                for x in word:
-                    if x != " " and not finished:
-                        revised_word += x
-                    else:
-                        finished = True
-            else:
-                finished = False
-                rep = 0
-                for x in word:
-                    if x != " " and not finished:
-                        if rep == 0:
+        if len(info) == 6:
+            for i in info:
+                word = info[i]
+                revised_word = ""
+                if i != "WANTS" and i != "last_name" and i != "first_name":
+                    for z in word:
+                        before_revised_word = revised_word
+                        try:
+                            revised_word += z
+                            z = int(z)
+                        except ValueError:
+                            revised_word = before_revised_word
+                elif i == "WANTS":
+                    finished = False
+                    for x in word:
+                        if x != " " and not finished:
                             revised_word += x
                         else:
-                            revised_word += x.lower()
-                    else:
-                        finished = True
-                    rep += 1
-            try:
+                            finished = True
+                else:
+                    finished = False
+                    rep = 0
+                    for x in word:
+                        if x != " " and not finished:
+                            if rep == 0:
+                                revised_word += x
+                            else:
+                                revised_word += x.lower()
+                        else:
+                            finished = True
+                        rep += 1
+                try:
+                    if i == "BATH":
+                        revised_word = int(revised_word)
+                        if revised_word >= 10:
+                            revised_word = revised_word/10
+                        revised_word = str(revised_word)
+                except ValueError:
+                    print("Error")
+                    self.change_button_color("2", True)
+                revised.append(revised_word)
+
+
+            keywords = list(info)
+            # print(keywords, revised)
+
+            clean_type = "ONETIME"
+            clean_sqft = 0
+            clean_beds = 0
+            clean_baths = 0
+            clean_last_name = "there"
+            clean_first_name = "there"
+
+            for i in keywords:
+                # print(i, revised[keywords.index(i)])
+                if i == "WANTS":
+                    clean_type = revised[keywords.index(i)]
+                if i == "SQFT":
+                    clean_sqft = revised[keywords.index(i)]
+                if i == "BED":
+                    clean_beds = revised[keywords.index(i)]
                 if i == "BATH":
-                    revised_word = int(revised_word)
-                    if revised_word >= 10:
-                        revised_word = revised_word/10
-                    revised_word = str(revised_word)
-            except ValueError:
-                print("No Number Collected")
-            revised.append(revised_word)
+                    clean_baths = revised[keywords.index(i)]
+                if i == "last_name":
+                    clean_last_name = revised[keywords.index(i)]
+                if i == "first_name":
+                    clean_first_name = revised[keywords.index(i)]
+        else:
+            print("Did not collect all info")
+            self.change_button_color("2", True)
 
-        keywords = list(info)
-        # print(keywords, revised)
-
-        clean_type = "ONETIME"
-        clean_sqft = 0
-        clean_beds = 0
-        clean_baths = 0
-        clean_last_name = "there"
-        clean_first_name = "there"
-
-        for i in keywords:
-            # print(i, revised[keywords.index(i)])
-            if i == "WANTS":
-                clean_type = revised[keywords.index(i)]
-            if i == "SQFT":
-                clean_sqft = revised[keywords.index(i)]
-            if i == "BED":
-                clean_beds = revised[keywords.index(i)]
-            if i == "BATH":
-                clean_baths = revised[keywords.index(i)]
-            if i == "last_name":
-                clean_last_name = revised[keywords.index(i)]
-            if i == "first_name":
-                clean_first_name = revised[keywords.index(i)]
 
         def calc_price(sqft, beds, baths, type_clean, name_first):
             elite = 250
@@ -219,32 +235,38 @@ class MyLayout(Screen):
                 main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
                 pyperclip.copy(main_info)
             except ValueError:
-                print("No Number collected")
+                print("Error")
+                self.change_button_color("2", True)
             # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
 
             print("Quote Complete")
             return elite, ongoing
 
         scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
-        list_for_scripts = scripts_choose.index(clean_type)
 
-        def calc_sqft_price(sqft):
-            sqft_price = 70
-            if sqft < 1000.01:
+        try:
+            list_for_scripts = scripts_choose.index(clean_type)
+
+            def calc_sqft_price(sqft):
                 sqft_price = 70
-            elif sqft < 2000.01:
-                sqft_price = 90
-            elif sqft < 2601:
-                sqft_price = 120
-            elif sqft < 3500.01:
-                sqft_price = 140
-            elif sqft < 4200:
-                sqft_price = 160
-            elif sqft < 10500:
-                sqft_price = sqft*.05
-            return sqft_price
+                if sqft < 1000.01:
+                    sqft_price = 70
+                elif sqft < 2000.01:
+                    sqft_price = 90
+                elif sqft < 2601:
+                    sqft_price = 120
+                elif sqft < 3500.01:
+                    sqft_price = 140
+                elif sqft < 4200:
+                    sqft_price = 160
+                elif sqft < 10500:
+                    sqft_price = sqft*.05
+                return sqft_price
 
-        calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
+            calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
+        except ValueError and UnboundLocalError:
+            print("Error")
+            self.change_button_color("2", True)
 
     def callback2(self, instance):
         print("Quote Loading")
@@ -254,8 +276,6 @@ class MyLayout(Screen):
         clean_beds = 0
         clean_baths = 0
         clean_first_name = "there"
-        clean_last_name = ""
-
         clean_type = self.ids.type_input.text
         clean_sqft = self.ids.sqft_input.text
         clean_beds = self.ids.beds_input.text
@@ -267,7 +287,6 @@ class MyLayout(Screen):
         if clean_last_name != "":
             clean_first_name = self.ids.first_name_input.text
             names = True
-            print(clean_first_name, clean_last_name)
 
         def calc_price(sqft, beds, baths, type_clean, name_first, name_last):
             elite = 250
@@ -314,34 +333,45 @@ class MyLayout(Screen):
             return elite, ongoing
 
         scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
-        list_for_scripts = scripts_choose.index(clean_type.upper())
 
-        def calc_sqft_price(sqft):
-            sqft_price = 70
-            if sqft < 1000.01:
+        try:
+            list_for_scripts = scripts_choose.index(clean_type.upper())
+
+            def calc_sqft_price(sqft):
                 sqft_price = 70
-            elif sqft < 2000.01:
-                sqft_price = 90
-            elif sqft < 2601:
-                sqft_price = 120
-            elif sqft < 3500.01:
-                sqft_price = 140
-            elif sqft < 4200:
-                sqft_price = 160
-            elif sqft < 10500:
-                sqft_price = sqft * .05
-            return sqft_price
+                if sqft < 1000.01:
+                    sqft_price = 70
+                elif sqft < 2000.01:
+                    sqft_price = 90
+                elif sqft < 2601:
+                    sqft_price = 120
+                elif sqft < 3500.01:
+                    sqft_price = 140
+                elif sqft < 4200:
+                    sqft_price = 160
+                elif sqft < 10500:
+                    sqft_price = sqft * .05
+                return sqft_price
 
-        calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name, clean_last_name)
+            calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name, clean_last_name)
+        except ValueError:
+            print("Error")
+            self.change_button_color("1", True)
 
 
 class SettingWindow(Screen):
     def update(self, btn):
         global username
         global comp_mon
-        username = self.ids.username_input.text
-        comp_mon = self.ids.screen_input.text
-        comp_mon = int(comp_mon)
+        if self.ids.username_input.text != "":
+            username = self.ids.username_input.text
+        else:
+            print("No Name Entered")
+        try:
+            comp_mon = self.ids.screen_input.text
+            comp_mon = int(comp_mon)
+        except ValueError:
+            print("No Monitor Entered")
         print("Updated!")
     pass
 
