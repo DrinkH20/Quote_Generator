@@ -1,12 +1,12 @@
-from scripts import get_title, get_quote, get_quote_manual, get_title_manual, get_quote_text
+from scripts import get_title, get_quote, get_title_manual, get_quote_text
 from PIL import Image
 import pytesseract
 import pyperclip
 import time
 from kivy.app import App
 from kivy.config import Config
-Config.set('graphics', 'width', '200')
-Config.set('graphics', 'height', '100')
+Config.set('graphics', 'width', '220')
+Config.set('graphics', 'height', '150')
 Config.set('graphics', 'position', 'custom')
 Config.set('graphics', 'resizable', 1)
 Config.set('graphics', 'left', 20)
@@ -254,13 +254,22 @@ class MyLayout(Screen):
         clean_beds = 0
         clean_baths = 0
         clean_first_name = "there"
+        clean_last_name = ""
 
         clean_type = self.ids.type_input.text
         clean_sqft = self.ids.sqft_input.text
         clean_beds = self.ids.beds_input.text
         clean_baths = self.ids.baths_input.text
 
-        def calc_price(sqft, beds, baths, type_clean, name_first):
+        clean_last_name = self.ids.last_name_input.text
+
+        names = False
+        if clean_last_name != "":
+            clean_first_name = self.ids.first_name_input.text
+            names = True
+            print(clean_first_name, clean_last_name)
+
+        def calc_price(sqft, beds, baths, type_clean, name_first, name_last):
             elite = 250
             ongoing = 140
 
@@ -290,10 +299,16 @@ class MyLayout(Screen):
                                        clean_beds, clean_baths)
             pyperclip.copy(text_info)
             time.sleep(0.4)
-            title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
-            pyperclip.copy(title)
-            time.sleep(0.4)
-            main_info = get_quote_manual(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            if names:
+                title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, name_last, name_first)
+                pyperclip.copy(title)
+                time.sleep(0.4)
+                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+            else:
+                title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
+                pyperclip.copy(title)
+                time.sleep(0.4)
+                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
             pyperclip.copy(main_info)
             print("Quote Complete")
             return elite, ongoing
@@ -317,7 +332,7 @@ class MyLayout(Screen):
                 sqft_price = sqft * .05
             return sqft_price
 
-        calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
+        calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name, clean_last_name)
 
 
 class SettingWindow(Screen):

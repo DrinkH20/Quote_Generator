@@ -128,59 +128,59 @@ def get_title_manual(sqft, beds, baths, part_list):
     return scripts[part_list]
 
 
-def get_quote_manual(initial, recuring, part_list, name="there", username=""):
-    scripts = [f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your one-time clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name},
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info you provided and our March special, your moving clean will be ${initial} (Includes washing all interior window panes within arms reach!)
-•	        Would you like any extras like fridge, oven, window blind or track cleaning?
-•	        Are there any other cleaning needs/notes you would like for me to add to our list?
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
-
-We look forward to cleaning for you!
-{username}""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and weekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and biweekly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-""", f"""Hi {name}!
-
-We're grateful for the opportunity to help with your cleaning needs!
-
-Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and monthly service is ${recuring}.
-
-Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
-
-We look forward to cleaning for you!
-{username}
-    """]
-    return scripts[part_list]
+# def get_quote_manual(initial, recuring, part_list, name="there", username=""):
+#     scripts = [f"""Hi {name},
+#
+# We're grateful for the opportunity to help with your cleaning needs!
+#
+# Based on the info you provided and our March special, your one-time clean will be ${initial} (Includes washing all interior window panes within arms reach!)
+# •	        Would you like any extras like fridge, oven, window blind or track cleaning?
+# •	        Are there any other cleaning needs/notes you would like for me to add to our list?
+# Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
+#
+# We look forward to cleaning for you!
+# {username}""", f"""Hi {name},
+#
+# We're grateful for the opportunity to help with your cleaning needs!
+#
+# Based on the info you provided and our March special, your moving clean will be ${initial} (Includes washing all interior window panes within arms reach!)
+# •	        Would you like any extras like fridge, oven, window blind or track cleaning?
+# •	        Are there any other cleaning needs/notes you would like for me to add to our list?
+# Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly, but we still have a few spots open in March!
+#
+# We look forward to cleaning for you!
+# {username}""", f"""Hi {name}!
+#
+# We're grateful for the opportunity to help with your cleaning needs!
+#
+# Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and weekly service is ${recuring}.
+#
+# Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
+#
+# We look forward to cleaning for you!
+# {username}
+# """, f"""Hi {name}!
+#
+# We're grateful for the opportunity to help with your cleaning needs!
+#
+# Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and biweekly service is ${recuring}.
+#
+# Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
+#
+# We look forward to cleaning for you!
+# {username}
+# """, f"""Hi {name}!
+#
+# We're grateful for the opportunity to help with your cleaning needs!
+#
+# Based on the info provided, and a special we are running for March, your initial reset clean will be ${initial} (this clean will be 2-3x as long and includes washing all interior window panes within arms reach) and monthly service is ${recuring}.
+#
+# Please let me know if you would like to get on the schedule and if you have any preferred days/times. Our schedule fills up quickly (especially for the longer initial clean!), but we still have a few spots in March! What works best?
+#
+# We look forward to cleaning for you!
+# {username}
+#     """]
+#     return scripts[part_list]
 
 
 def get_quote_text(initial, recuring, part_list, name="there", username="", sqft=0, beds=0, baths=0):
