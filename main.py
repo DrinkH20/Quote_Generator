@@ -252,7 +252,7 @@ class MyLayout(Screen):
                 return sqft_price
 
             calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
-        except ValueError and UnboundLocalError and IndexError:
+        except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
             self.change_button_color("2", True)
 
