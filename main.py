@@ -1,4 +1,4 @@
-from scripts import get_title, get_quote, get_title_manual, get_quote_text
+from scripts import get_title, get_quote, get_title_manual, get_quote_text, failed
 from PIL import Image
 import pytesseract
 import pyperclip
@@ -16,6 +16,13 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 import mss
 import mss.tools
 import os
+
+from datetime import date
+
+today = date.today()
+
+months_list = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+month = months_list[today.month-1]
 
 
 def get_screenshot(com_mon=1):
@@ -191,6 +198,8 @@ class MyLayout(Screen):
             else:
                 print("Did not collect all info")
                 self.change_button_color("2", True)
+                body_paragraph = failed(month)
+                pyperclip.copy(body_paragraph)
 
             def calc_price(sqft, beds, baths, type_clean, name_first):
                 elite = 250
@@ -216,14 +225,14 @@ class MyLayout(Screen):
                 if elite < 250:
                     elite = 250
 
-                text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
                                            clean_beds, clean_baths)
                 pyperclip.copy(text_info)
                 time.sleep(0.4)
                 title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
                 pyperclip.copy(title)
                 time.sleep(0.4)
-                main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+                main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
                 pyperclip.copy(main_info)
 
                 # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
@@ -255,6 +264,8 @@ class MyLayout(Screen):
         except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
             self.change_button_color("2", True)
+            body_paragraph = failed(month)
+            pyperclip.copy(body_paragraph)
 
     def callback2(self, instance):
         try:
@@ -303,7 +314,7 @@ class MyLayout(Screen):
                 if elite < 250:
                     elite = 250
 
-                text_info = get_quote_text(round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
                                            clean_beds, clean_baths)
                 pyperclip.copy(text_info)
                 time.sleep(0.4)
@@ -311,12 +322,12 @@ class MyLayout(Screen):
                     title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, name_last, name_first)
                     pyperclip.copy(title)
                     time.sleep(0.4)
-                    main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
                 else:
                     title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
                     pyperclip.copy(title)
                     time.sleep(0.4)
-                    main_info = get_quote(round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
                 pyperclip.copy(main_info)
                 print("Quote Complete")
                 return elite, ongoing
@@ -346,6 +357,8 @@ class MyLayout(Screen):
         except ValueError:
             print("Error Loading Quote")
             self.change_button_color("1", True)
+            body_paragraph = failed(month)
+            pyperclip.copy(body_paragraph)
 
 
 class SettingWindow(Screen):
