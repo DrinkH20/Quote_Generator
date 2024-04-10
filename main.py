@@ -92,39 +92,47 @@ class MyLayout(Screen):
                 data = filename
                 keywordz = ["WANTS", "SQFT", "BED", "BATH"]
                 extracted_data = {}
-                for keyword in keywordz:
-                    if keyword in data:
-                        length = keyword.__len__()
-                        num = ""
-                        for k in range(8):
-                            if data[data.index(keyword) + length + k + 1] != "\n":
-                                num += data[data.index(keyword) + length + k + 1]
-                        extracted_data[keyword] = num
+                try:
+                    for keyword in keywordz:
+                        if keyword in data:
+                            length = keyword.__len__()
+                            num = ""
+                            for k in range(8):
+                                if data[data.index(keyword) + length + k + 1] != "\n":
+                                    num += data[data.index(keyword) + length + k + 1]
+                            extracted_data[keyword] = num
 
-                name = ["WANTS"]
-                for keyword in name:
-                    if keyword in data:
-                        first_name = ""
-                        last_name = ""
-                        k = 0
-                        while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == ",":
-                            k -= 1
+                    name = ["WANTS"]
+                    for keyword in name:
+                        if keyword in data:
+                            first_name = ""
+                            last_name = ""
+                            k = 0
+                            while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == ",":
+                                k -= 1
 
-                        k -= 1
-                        while data[data.index(keyword) + k - 1] != "\n" and data[data.index(keyword) + k - 1] != " ":
-                            first_name = data[data.index(keyword) + k - 1] + first_name
                             k -= 1
+                            while data[data.index(keyword) + k - 1] != "\n" and data[data.index(keyword) + k - 1] != " ":
+                                first_name = data[data.index(keyword) + k - 1] + first_name
+                                k -= 1
 
-                        k -= 1
-                        while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == "," or data[data.index(keyword) + k - 1] == " ":
                             k -= 1
+                            while data[data.index(keyword) + k - 1] == "\n" or data[data.index(keyword) + k - 1] == "," or data[data.index(keyword) + k - 1] == " ":
+                                k -= 1
 
-                        # i -= 1
-                        while data[data.index(keyword) + k - 1] != "\n" and data[data.index(keyword) + k - 1] != " ":
-                            last_name = data[data.index(keyword) + k - 1] + last_name
-                            k -= 1
-                        extracted_data["last_name"] = last_name
-                        extracted_data["first_name"] = first_name
+                            # i -= 1
+                            while data[data.index(keyword) + k - 1] != "\n" and data[data.index(keyword) + k - 1] != " ":
+                                last_name = data[data.index(keyword) + k - 1] + last_name
+                                k -= 1
+                            extracted_data["last_name"] = last_name
+                            extracted_data["first_name"] = first_name
+
+                except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                    print("Error Loading Quote")
+                    self.change_button_color("2", True)
+                    body_paragraph = failed(month)
+                    pyperclip.copy(body_paragraph)
+
                 return extracted_data
 
             info = extract_data(page_info.upper())
@@ -162,12 +170,17 @@ class MyLayout(Screen):
                             else:
                                 finished = True
                             rep += 1
-
-                    if i == "BATH":
-                        revised_word = int(revised_word)
-                        if revised_word >= 10:
-                            revised_word = revised_word/10
-                        revised_word = str(revised_word)
+                    try:
+                        if i == "BATH":
+                            revised_word = int(revised_word)
+                            if revised_word >= 10:
+                                revised_word = revised_word/10
+                            revised_word = str(revised_word)
+                    except ValueError:
+                        print("Did not collect all info")
+                        self.change_button_color("2", True)
+                        body_paragraph = failed(month)
+                        pyperclip.copy(body_paragraph)
 
                     revised.append(revised_word)
 
@@ -204,40 +217,48 @@ class MyLayout(Screen):
             def calc_price(sqft, beds, baths, type_clean, name_first):
                 elite = 250
                 ongoing = 140
-                # These are the base prices that are the minimum cost of cleans
-                price_sqft = calc_sqft_price(int(sqft))
-                before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
-                if type_clean == 0:
-                    elite = before_price * 2.9 * 1.1 * .81
-                if type_clean == 1:
-                    elite = before_price * 2.9 * 1.1 * 1.15 * .81
-                if type_clean == 2:
-                    ongoing = before_price * .9 * .95
-                if type_clean == 3:
-                    ongoing = before_price * 1 * .95
-                if type_clean == 4:
-                    ongoing = before_price * 1.33 * .95
+                try:
 
-                if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                    elite = before_price * 2.5 * 1.103 * .65
-                    if ongoing < 140:
-                        ongoing = 140
-                if elite < 250:
-                    elite = 250
+                    # These are the base prices that are the minimum cost of cleans
+                    price_sqft = calc_sqft_price(int(sqft))
+                    before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                    if type_clean == 0:
+                        elite = before_price * 2.9 * 1.1 * .81
+                    if type_clean == 1:
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .81
+                    if type_clean == 2:
+                        ongoing = before_price * .9 * .95
+                    if type_clean == 3:
+                        ongoing = before_price * 1 * .95
+                    if type_clean == 4:
+                        ongoing = before_price * 1.33 * .95
 
-                text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
-                                           clean_beds, clean_baths)
-                pyperclip.copy(text_info)
-                time.sleep(0.4)
-                title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
-                pyperclip.copy(title)
-                time.sleep(0.4)
-                main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
-                pyperclip.copy(main_info)
+                    if type_clean == 2 or type_clean == 3 or type_clean == 4:
+                        elite = before_price * 2.5 * 1.103 * .65
+                        if ongoing < 140:
+                            ongoing = 140
+                    if elite < 250:
+                        elite = 250
 
-                # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
+                    text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                               clean_beds, clean_baths)
+                    pyperclip.copy(text_info)
+                    time.sleep(0.4)
+                    title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
+                    pyperclip.copy(title)
+                    time.sleep(0.4)
+                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    pyperclip.copy(main_info)
 
-                print("Quote Complete")
+                    # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
+
+                    print("Quote Complete")
+                except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                    print("Error Loading Quote")
+                    self.change_button_color("2", True)
+                    body_paragraph = failed(month)
+                    pyperclip.copy(body_paragraph)
+
                 return elite, ongoing
 
             scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
@@ -246,18 +267,24 @@ class MyLayout(Screen):
 
             def calc_sqft_price(sqft):
                 sqft_price = 70
-                if sqft < 1000.01:
-                    sqft_price = 70
-                elif sqft < 2000.01:
-                    sqft_price = 90
-                elif sqft < 2601:
-                    sqft_price = 120
-                elif sqft < 3500.01:
-                    sqft_price = 140
-                elif sqft < 4200:
-                    sqft_price = 160
-                elif sqft < 10500:
-                    sqft_price = sqft*.05
+                try:
+                    if sqft < 1000.01:
+                        sqft_price = 70
+                    elif sqft < 2000.01:
+                        sqft_price = 90
+                    elif sqft < 2601:
+                        sqft_price = 120
+                    elif sqft < 3500.01:
+                        sqft_price = 140
+                    elif sqft < 4200:
+                        sqft_price = 160
+                    elif sqft < 10500:
+                        sqft_price = sqft*.05
+                except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                    print("Error Loading Quote")
+                    self.change_button_color("2", True)
+                    body_paragraph = failed(month)
+                    pyperclip.copy(body_paragraph)
                 return sqft_price
 
             calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name)
@@ -291,45 +318,51 @@ class MyLayout(Screen):
             def calc_price(sqft, beds, baths, type_clean, name_first, name_last):
                 elite = 250
                 ongoing = 140
+                try:
+                    # These are the base prices that are the minimum cost of cleans
+                    price_sqft = calc_sqft_price(int(sqft))
+                    # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
+                    before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                    if type_clean == 0:
+                        elite = before_price * 2.9 * 1.1 * .81
+                    if type_clean == 1:
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .81
+                    if type_clean == 2:
+                        ongoing = before_price * .9 * .95
+                    if type_clean == 3:
+                        ongoing = before_price * 1 * .95
+                    if type_clean == 4:
+                        ongoing = before_price * 1.33 * .95
 
-                # These are the base prices that are the minimum cost of cleans
-                price_sqft = calc_sqft_price(int(sqft))
-                # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
-                before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
-                if type_clean == 0:
-                    elite = before_price * 2.9 * 1.1 * .81
-                if type_clean == 1:
-                    elite = before_price * 2.9 * 1.1 * 1.15 * .81
-                if type_clean == 2:
-                    ongoing = before_price * .9 * .95
-                if type_clean == 3:
-                    ongoing = before_price * 1 * .95
-                if type_clean == 4:
-                    ongoing = before_price * 1.33 * .95
+                    if type_clean == 2 or type_clean == 3 or type_clean == 4:
+                        elite = before_price * 2.5 * 1.103 * .65
+                        if ongoing < 140:
+                            ongoing = 140
+                    if elite < 250:
+                        elite = 250
 
-                if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                    elite = before_price * 2.5 * 1.103 * .65
-                    if ongoing < 140:
-                        ongoing = 140
-                if elite < 250:
-                    elite = 250
-
-                text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
-                                           clean_beds, clean_baths)
-                pyperclip.copy(text_info)
-                time.sleep(0.4)
-                if names:
-                    title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, name_last, name_first)
-                    pyperclip.copy(title)
+                    text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                               clean_beds, clean_baths)
+                    pyperclip.copy(text_info)
                     time.sleep(0.4)
-                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
-                else:
-                    title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
-                    pyperclip.copy(title)
-                    time.sleep(0.4)
-                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
-                pyperclip.copy(main_info)
-                print("Quote Complete")
+                    if names:
+                        title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, name_last, name_first)
+                        pyperclip.copy(title)
+                        time.sleep(0.4)
+                        main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    else:
+                        title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
+                        pyperclip.copy(title)
+                        time.sleep(0.4)
+                        main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    pyperclip.copy(main_info)
+                    print("Quote Complete")
+
+                except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                    print("Error Loading Quote")
+                    self.change_button_color("2", True)
+                    body_paragraph = failed(month)
+                    pyperclip.copy(body_paragraph)
                 return elite, ongoing
 
             scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
@@ -338,25 +371,32 @@ class MyLayout(Screen):
 
             def calc_sqft_price(sqft):
                 sqft_price = 70
-                if sqft < 1000.01:
-                    sqft_price = 70
-                elif sqft < 2000.01:
-                    sqft_price = 90
-                elif sqft < 2601:
-                    sqft_price = 120
-                elif sqft < 3500.01:
-                    sqft_price = 140
-                elif sqft < 4200:
-                    sqft_price = 160
-                elif sqft < 10500:
-                    sqft_price = sqft * .05
+                try:
+                    if sqft < 1000.01:
+                        sqft_price = 70
+                    elif sqft < 2000.01:
+                        sqft_price = 90
+                    elif sqft < 2601:
+                        sqft_price = 120
+                    elif sqft < 3500.01:
+                        sqft_price = 140
+                    elif sqft < 4200:
+                        sqft_price = 160
+                    elif sqft < 10500:
+                        sqft_price = sqft * .05
+
+                except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                    print("Error Loading Quote")
+                    self.change_button_color("2", True)
+                    body_paragraph = failed(month)
+                    pyperclip.copy(body_paragraph)
+
                 return sqft_price
 
             calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name, clean_last_name)
-
-        except ValueError:
+        except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
-            self.change_button_color("1", True)
+            self.change_button_color("2", True)
             body_paragraph = failed(month)
             pyperclip.copy(body_paragraph)
 
