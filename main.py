@@ -218,10 +218,16 @@ class MyLayout(Screen):
                 elite = 250
                 ongoing = 140
                 try:
-
                     # These are the base prices that are the minimum cost of cleans
-                    price_sqft = calc_sqft_price(int(sqft))
-                    before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                    try:
+                        price_sqft = calc_sqft_price(int(sqft))
+                        before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                    except ValueError:
+                        print("Error Loading Quote")
+                        self.change_button_color("2", True)
+                        body_paragraph = failed(month)
+                        pyperclip.copy(body_paragraph)
+
                     if type_clean == 0:
                         elite = before_price * 2.9 * 1.1 * .81
                     if type_clean == 1:
@@ -320,7 +326,13 @@ class MyLayout(Screen):
                 ongoing = 140
                 try:
                     # These are the base prices that are the minimum cost of cleans
-                    price_sqft = calc_sqft_price(int(sqft))
+                    try:
+                        price_sqft = calc_sqft_price(int(sqft))
+                    except ValueError:
+                        print("Error Loading Quote")
+                        self.change_button_color("2", True)
+                        body_paragraph = failed(month)
+                        pyperclip.copy(body_paragraph)
                     # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
                     before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
                     if type_clean == 0:
