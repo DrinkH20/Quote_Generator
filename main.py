@@ -137,6 +137,8 @@ class MyLayout(Screen):
 
             info = extract_data(page_info.upper())
 
+            print(page_info)
+
             revised = []
 
             if len(info) == 6:
