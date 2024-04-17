@@ -230,10 +230,11 @@ class MyLayout(Screen):
                         body_paragraph = failed(month)
                         pyperclip.copy(body_paragraph)
 
+                    # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .81
+                        elite = before_price * 2.9 * 1.1 * .85
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .81
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .85
                     if type_clean == 2:
                         ongoing = before_price * .9 * .95
                     if type_clean == 3:
@@ -337,10 +338,11 @@ class MyLayout(Screen):
                         pyperclip.copy(body_paragraph)
                     # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
                     before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
+                    # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .81
+                        elite = before_price * 2.9 * 1.1 * .85
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .81
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .85
                     if type_clean == 2:
                         ongoing = before_price * .9 * .95
                     if type_clean == 3:
