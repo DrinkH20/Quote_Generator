@@ -347,9 +347,9 @@ class MyLayout(Screen):
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .95
+                        elite = before_price * 2.9 * 1.1 * 1.1
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
+                        elite = before_price * 2.9 * 1.1 * 1.15 * 1
                     if type_clean == 2:
                         ongoing = before_price * .9 * .95
                     if type_clean == 3:
