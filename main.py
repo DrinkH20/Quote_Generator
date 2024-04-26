@@ -232,9 +232,9 @@ class MyLayout(Screen):
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .85
+                        elite = before_price * 2.9 * 1.1 * .95
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .85
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
                     if type_clean == 2:
                         ongoing = before_price * .9 * .95
                     if type_clean == 3:
@@ -272,7 +272,13 @@ class MyLayout(Screen):
 
             scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
 
-            list_for_scripts = scripts_choose.index(clean_type)
+            try:
+                list_for_scripts = scripts_choose.index(clean_type)
+            except ValueError:
+                print("Error Loading Quote")
+                self.change_button_color("2", True)
+                body_paragraph = failed(month)
+                pyperclip.copy(body_paragraph)
 
             def calc_sqft_price(sqft):
                 sqft_price = 70
