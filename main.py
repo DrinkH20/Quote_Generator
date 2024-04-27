@@ -234,13 +234,13 @@ class MyLayout(Screen):
                     if type_clean == 0:
                         elite = before_price * 2.9 * 1.1 * .95
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
+                        elite = before_price * 2.9 * 1.1 * 1.15 * 1
                     if type_clean == 2:
-                        ongoing = before_price * .9 * .95
+                        ongoing = before_price * .9 * 1.01
                     if type_clean == 3:
-                        ongoing = before_price * 1 * .95
+                        ongoing = before_price * 1 * 1.01
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * .95
+                        ongoing = before_price * 1.33 * 1.05
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
                         elite = before_price * 2.5 * 1.103 * .65
@@ -349,13 +349,13 @@ class MyLayout(Screen):
                     if type_clean == 0:
                         elite = before_price * 2.9 * 1.1 * .95
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
+                        elite = before_price * 2.9 * 1.1 * 1.15 * 1
                     if type_clean == 2:
-                        ongoing = before_price * .9 * .95
+                        ongoing = before_price * .9 * 1.01
                     if type_clean == 3:
-                        ongoing = before_price * 1 * .95
+                        ongoing = before_price * 1 * 1.01
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * .95
+                        ongoing = before_price * 1.33 * 1.05
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
                         elite = before_price * 2.5 * 1.103 * .65
