@@ -390,7 +390,14 @@ class MyLayout(Screen):
 
             scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
 
-            list_for_scripts = scripts_choose.index(clean_type.upper())
+            try:
+                list_for_scripts = scripts_choose.index(clean_type.upper())
+
+            except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
+                print("Error Loading Quote")
+                self.change_button_color("2", True)
+                body_paragraph = failed(month)
+                pyperclip.copy(body_paragraph)
 
             def calc_sqft_price(sqft):
                 sqft_price = 70
