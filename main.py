@@ -283,11 +283,11 @@ class MyLayout(Screen):
             def calc_sqft_price(sqft):
                 sqft_price = 70
                 try:
-                    if sqft < 1000.01:
+                    if sqft < 1000:
                         sqft_price = 70
                     elif sqft < 2000.01:
                         sqft_price = 90
-                    elif sqft < 2601:
+                    elif sqft < 2701:
                         sqft_price = 120
                     elif sqft < 3500.01:
                         sqft_price = 140
@@ -346,19 +346,20 @@ class MyLayout(Screen):
                     before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
+                    print(before_price)
                     if type_clean == 0:
                         elite = before_price * 2.9 * 1.1 * .95
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
+                        elite = before_price * 2.9 * 1.1 * 1.15 * 1
                     if type_clean == 2:
                         ongoing = before_price * .9 * 1.01
                     if type_clean == 3:
                         ongoing = before_price * 1 * 1.01
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * 1.07
+                        ongoing = before_price * 1.33 * 1.05
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.1 * .65
+                        elite = before_price * 2.5 * 1.103 * .65
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
@@ -407,7 +408,7 @@ class MyLayout(Screen):
                         sqft_price = 70
                     elif sqft < 2000.01:
                         sqft_price = 90
-                    elif sqft < 2601:
+                    elif sqft < 2701:
                         sqft_price = 120
                     elif sqft < 3500.01:
                         sqft_price = 140
