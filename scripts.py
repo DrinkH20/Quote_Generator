@@ -163,7 +163,7 @@ Is this something I can get on the schedule for you?
     return scripts[part_list]
 
 
-def failed(date_month):
+def failed(date_month, username=""):
     scripts = f"""Hi there!
 
 We're grateful for the opportunity to help with your cleaning needs!
@@ -174,6 +174,6 @@ Please let me know if you have any preferred days/times. Our schedule fills up q
 
 We look forward to cleaning for you!
 
-Joel
+{username}
 """
     return scripts

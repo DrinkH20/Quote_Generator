@@ -130,14 +130,14 @@ class MyLayout(Screen):
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
-                    body_paragraph = failed(month)
+                    body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
 
                 return extracted_data
 
             info = extract_data(page_info.upper())
 
-            print(page_info)
+            # print(page_info)
 
             revised = []
 
@@ -181,7 +181,7 @@ class MyLayout(Screen):
                     except ValueError:
                         print("Did not collect all info")
                         self.change_button_color("2", True)
-                        body_paragraph = failed(month)
+                        body_paragraph = failed(month, username)
                         pyperclip.copy(body_paragraph)
 
                     revised.append(revised_word)
@@ -213,7 +213,7 @@ class MyLayout(Screen):
             else:
                 print("Did not collect all info")
                 self.change_button_color("2", True)
-                body_paragraph = failed(month)
+                body_paragraph = failed(month, username)
                 pyperclip.copy(body_paragraph)
 
             def calc_price(sqft, beds, baths, type_clean, name_first):
@@ -227,7 +227,7 @@ class MyLayout(Screen):
                     except ValueError:
                         print("Error Loading Quote")
                         self.change_button_color("2", True)
-                        body_paragraph = failed(month)
+                        body_paragraph = failed(month, username)
                         pyperclip.copy(body_paragraph)
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
@@ -265,7 +265,7 @@ class MyLayout(Screen):
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
-                    body_paragraph = failed(month)
+                    body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
 
                 return elite, ongoing
@@ -277,7 +277,7 @@ class MyLayout(Screen):
             except ValueError:
                 print("Error Loading Quote")
                 self.change_button_color("2", True)
-                body_paragraph = failed(month)
+                body_paragraph = failed(month, username)
                 pyperclip.copy(body_paragraph)
 
             def calc_sqft_price(sqft):
@@ -298,7 +298,7 @@ class MyLayout(Screen):
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
-                    body_paragraph = failed(month)
+                    body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
                 return sqft_price
 
@@ -306,7 +306,7 @@ class MyLayout(Screen):
         except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
             self.change_button_color("2", True)
-            body_paragraph = failed(month)
+            body_paragraph = failed(month, username)
             pyperclip.copy(body_paragraph)
 
     def callback2(self, instance):
@@ -340,7 +340,7 @@ class MyLayout(Screen):
                     except ValueError:
                         print("Error Loading Quote")
                         self.change_button_color("2", True)
-                        body_paragraph = failed(month)
+                        body_paragraph = failed(month, username)
                         pyperclip.copy(body_paragraph)
                     # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
                     before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
@@ -384,19 +384,20 @@ class MyLayout(Screen):
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
-                    body_paragraph = failed(month)
+                    body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
                 return elite, ongoing
 
             scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
 
             try:
-                list_for_scripts = scripts_choose.index(clean_type.upper())
+                if clean_type != "":
+                    list_for_scripts = scripts_choose.index(clean_type.upper())
 
             except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                 print("Error Loading Quote")
                 self.change_button_color("2", True)
-                body_paragraph = failed(month)
+                body_paragraph = failed(month, username)
                 pyperclip.copy(body_paragraph)
 
             def calc_sqft_price(sqft):
@@ -418,7 +419,7 @@ class MyLayout(Screen):
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
-                    body_paragraph = failed(month)
+                    body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
 
                 return sqft_price
@@ -427,7 +428,7 @@ class MyLayout(Screen):
         except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
             self.change_button_color("2", True)
-            body_paragraph = failed(month)
+            body_paragraph = failed(month, username)
             pyperclip.copy(body_paragraph)
 
 
