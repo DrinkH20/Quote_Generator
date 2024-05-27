@@ -25,6 +25,11 @@ months_list = ("January", "February", "March", "April", "May", "June", "July", "
 month = months_list[today.month-1]
 
 
+# Discounts:
+moving_discount = .05
+onetime_discount = .05
+
+
 def get_screenshot(com_mon=1):
     with mss.mss() as sct:
         # Get information of monitor 2
@@ -294,7 +299,7 @@ class MyLayout(Screen):
                     elif sqft < 4200:
                         sqft_price = 160
                     elif sqft < 10500:
-                        sqft_price = sqft*.05
+                        sqft_price = 250
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
                     self.change_button_color("2", True)
@@ -346,20 +351,19 @@ class MyLayout(Screen):
                     before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
-                    print(before_price)
                     if type_clean == 0:
                         elite = before_price * 2.9 * 1.1 * .95
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * 1
+                        elite = before_price * 2.9 * 1.1 * 1.15 * .95
                     if type_clean == 2:
                         ongoing = before_price * .9 * 1.01
                     if type_clean == 3:
                         ongoing = before_price * 1 * 1.01
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * 1.05
+                        ongoing = before_price * 1.33 * 1.07
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.103 * .65
+                        elite = before_price * 2.5 * 1.1 * .65
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
@@ -404,7 +408,7 @@ class MyLayout(Screen):
             def calc_sqft_price(sqft):
                 sqft_price = 70
                 try:
-                    if sqft < 1000.01:
+                    if sqft < 1000:
                         sqft_price = 70
                     elif sqft < 2000.01:
                         sqft_price = 90
@@ -415,7 +419,7 @@ class MyLayout(Screen):
                     elif sqft < 4200:
                         sqft_price = 160
                     elif sqft < 10500:
-                        sqft_price = sqft * .05
+                        sqft_price = 250
 
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
