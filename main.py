@@ -248,7 +248,7 @@ class MyLayout(Screen):
                         ongoing = before_price * 1.33 * 1.07
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.11 * .65
+                        elite = before_price * 2.5 * 1.1 * .65
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
@@ -363,7 +363,7 @@ class MyLayout(Screen):
                         ongoing = before_price * 1.33 * 1.07
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.11 * .65
+                        elite = before_price * 2.5 * 1.1 * .65
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
