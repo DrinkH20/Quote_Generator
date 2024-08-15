@@ -1,5 +1,6 @@
 from scripts import get_title, get_quote, get_title_manual, get_quote_text, failed
 from PIL import Image
+from server_price_connect import update_servers
 import pytesseract
 import pyperclip
 import time
@@ -28,6 +29,11 @@ month = months_list[today.month-1]
 # Discounts:
 moving_discount = .05
 onetime_discount = .05
+
+# Updates from the estimator on googlesheets
+# These are all the factors that need to be used to multiply the base price by to get the correct qoute for leads
+ot, initial, move, monthly, biweekly, weekly = map(float, update_servers())
+print("Prices successfully updated!")
 
 
 def get_screenshot(com_mon=1):
@@ -237,18 +243,18 @@ class MyLayout(Screen):
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .8
+                        elite = before_price * ot
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .8
+                        elite = before_price * move
                     if type_clean == 2:
-                        ongoing = before_price * .9 * 1.01
+                        ongoing = before_price * weekly
                     if type_clean == 3:
-                        ongoing = before_price * 1 * 1.01
+                        ongoing = before_price * biweekly
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * 1.07
+                        ongoing = before_price * monthly
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.1 * .65
+                        elite = before_price * initial
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
@@ -352,18 +358,18 @@ class MyLayout(Screen):
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
                     if type_clean == 0:
-                        elite = before_price * 2.9 * 1.1 * .8
+                        elite = before_price * ot
                     if type_clean == 1:
-                        elite = before_price * 2.9 * 1.1 * 1.15 * .8
+                        elite = before_price * move
                     if type_clean == 2:
-                        ongoing = before_price * .9 * 1.01
+                        ongoing = before_price * weekly
                     if type_clean == 3:
-                        ongoing = before_price * 1 * 1.01
+                        ongoing = before_price * biweekly
                     if type_clean == 4:
-                        ongoing = before_price * 1.33 * 1.07
+                        ongoing = before_price * monthly
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * 2.5 * 1.1 * .65
+                        elite = before_price * initial
                         if ongoing < 140:
                             ongoing = 140
                     if elite < 250:
