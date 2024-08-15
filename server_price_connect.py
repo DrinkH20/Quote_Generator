@@ -43,7 +43,6 @@ def update_servers():
         all_floats.append(extracted_numbers)
 
     calc_factors = []
-
     # Multiply all the numbers in each sublist
     results = [np.prod(sublist) for sublist in all_floats]
 

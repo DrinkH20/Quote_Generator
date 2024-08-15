@@ -31,7 +31,7 @@ moving_discount = .05
 onetime_discount = .05
 
 # Updates from the estimator on googlesheets
-# These are all the factors that need to be used to multiply the base price by to get the correct prices to leads
+# These are all the factors that need to be used to multiply the base price by to get the correct price to leads
 ot, initial, move, monthly, biweekly, weekly = map(float, update_servers())
 print("Prices successfully updated!")
 
