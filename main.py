@@ -1,30 +1,43 @@
-from scripts import get_title, get_quote, get_title_manual, get_quote_text, failed
+from scripts import get_title, get_quote, get_title_manual, get_quote_text, failed, out_of_service_area, get_quote_text_dfw, get_quote_dfw
 from PIL import Image
 from server_price_connect import update_servers
 import pytesseract
 import pyperclip
 import time
-from kivy.app import App
 from kivy.config import Config
 Config.set('graphics', 'width', '220')
 Config.set('graphics', 'height', '150')
 Config.set('graphics', 'position', 'custom')
-Config.set('graphics', 'resizable', 1)
 Config.set('graphics', 'left', 20)
 Config.set('graphics', 'top', 50)
+Config.set('graphics', 'resizable', 1)
+
+# Now import Kivy modules
+from kivy.app import App
+from kivy.core.window import Window
+from kivy.properties import ListProperty, StringProperty
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+
 import mss
 import mss.tools
 import os
 
 from datetime import date
 
+if os.path.exists("token.pickle"):
+    os.remove("token.pickle")
+    print("token.pickle has been deleted")
+else:
+    print("token.pickle does not exist")
+
+
 today = date.today()
 
 months_list = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
 month = months_list[today.month-1]
 
+market = "PDX"
 
 # Discounts:
 moving_discount = .05
@@ -32,8 +45,23 @@ onetime_discount = .05
 
 # Updates from the estimator on googlesheets
 # These are all the factors that need to be used to multiply the base price by to get the correct price to leads
-ot, initial, move, monthly, biweekly, weekly = map(float, update_servers())
-print("Prices successfully updated!")
+ot, initial, move, monthly, biweekly, weekly = 1, 1, 1, 1, 1, 1
+texas_factors = []
+
+def get_prices_googlesheets(mark):
+    global ot, initial, move, monthly, biweekly, weekly, texas_factors
+    factors, texas_factors = update_servers(mark)
+    set_ot, set_initial, set_move, set_monthly, set_biweekly, set_weekly = map(float, factors)
+    # print(texas_factors)
+    if (ot, initial, move, monthly, biweekly, weekly) == (set_ot, set_initial, set_move, set_monthly, set_biweekly, set_weekly):
+        print("No change needed")
+    else:
+        ot, initial, move, monthly, biweekly, weekly = set_ot, set_initial, set_move, set_monthly, set_biweekly, set_weekly
+        print("Prices successfully updated!")
+    # print(ot, initial, move, monthly, biweekly, weekly)
+
+
+get_prices_googlesheets(market)
 
 
 def get_screenshot(com_mon=1):
@@ -72,6 +100,50 @@ def get_screenshot(com_mon=1):
 
 
 class MyLayout(Screen):
+    title_text = StringProperty("Get PDX Quotes")
+    title_color = ListProperty([0.2, 0.2, 0.9, 1])  # Blueish
+
+    def update_last_focused(self, instance, value):
+        if value:  # Only when it's gaining focus
+            self.last_focused = instance
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_key_down=self.on_key_down)
+        self.focus_chain = []  # We'll fill this in `on_kv_post`
+        for widget in self.focus_chain:
+            widget.bind(focus=self.update_last_focused)
+        self.last_focused = None
+
+    def on_kv_post(self, base_widget):
+        # Define focus order once widgets are loaded
+        self.focus_chain = [
+            self.ids.first_name_input,
+            self.ids.last_name_input,
+            self.ids.sqft_input,
+            self.ids.beds_input,
+            self.ids.baths_input
+        ]
+
+    def on_key_down(self, window, key, scancode, codepoint, modifiers):
+        if key == 9:  # Tab
+            shift_pressed = "shift" in modifiers
+
+            if self.last_focused and self.last_focused in self.focus_chain:
+                index = self.focus_chain.index(self.last_focused)
+
+                if shift_pressed:
+                    next_index = (index - 1) % len(self.focus_chain)
+                else:
+                    next_index = (index + 1) % len(self.focus_chain)
+
+                self.focus_chain[next_index].focus = True
+                return True  # Prevent default tab behavior
+        return False
+
+    def change_button_type(self, change="False"):
+        self.ids.cleantype.text = change
+
     def change_button_color(self, btn, error_color=False):
         if btn == "1":
             if self.ids.button_1.background_color == [1, 0, 0, 1]:
@@ -228,7 +300,7 @@ class MyLayout(Screen):
                 pyperclip.copy(body_paragraph)
 
             def calc_price(sqft, beds, baths, type_clean, name_first):
-                elite = 250
+                elite = 200
                 ongoing = 140
                 try:
                     # These are the base prices that are the minimum cost of cleans
@@ -242,6 +314,7 @@ class MyLayout(Screen):
                         pyperclip.copy(body_paragraph)
 
                     # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
+                    dfw_type_clean = type_clean
                     if type_clean == 0:
                         elite = before_price * ot
                     if type_clean == 1:
@@ -252,22 +325,47 @@ class MyLayout(Screen):
                         ongoing = before_price * biweekly
                     if type_clean == 4:
                         ongoing = before_price * monthly
+                    if dfw_type_clean >= 2:
+                        dfw_type_clean += 1
+
+                    # Order of cleanings is switched on the estimator to go OT initial move monthly biweekly week. So i swap the weekly and monthly numbers
+                    if dfw_type_clean == 3:
+                        dfw_type_clean = 5
+                    elif dfw_type_clean == 5:
+                        dfw_type_clean = 3
+
+                    if market == "DFW":
+                        elite = elite * texas_factors[dfw_type_clean]
 
                     if type_clean == 2 or type_clean == 3 or type_clean == 4:
                         elite = before_price * initial
                         if ongoing < 140:
                             ongoing = 140
-                    if elite < 250:
-                        elite = 250
+                    if market == "DFW":
+                        ongoing = ongoing * texas_factors[dfw_type_clean]
+                    if elite < 200:
+                        elite = 200
 
-                    text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
-                                               clean_beds, clean_baths)
+                    if market == "PDX":
+                        text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
+                                                   clean_beds, clean_baths)
+                    elif market == "DFW":
+                        text_info = get_quote_text_dfw(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                                   username, clean_sqft,
+                                                   clean_beds, clean_baths)
+                    pyperclip.copy(f"Lead {name_first} {clean_last_name}")
+                    time.sleep(0.4)
                     pyperclip.copy(text_info)
                     time.sleep(0.4)
                     title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
                     pyperclip.copy(title)
                     time.sleep(0.4)
-                    main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                    if market == "PDX":
+                        main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                              username)
+                    elif market == "DFW":
+                        main_info = get_quote_dfw(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                              username)
                     pyperclip.copy(main_info)
 
                     # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
@@ -341,65 +439,112 @@ class MyLayout(Screen):
                 clean_first_name = self.ids.first_name_input.text
                 names = True
 
-            def calc_price(sqft, beds, baths, type_clean, name_first, name_last):
-                elite = 250
+            def calc_price(name_first, name_last, sqft, beds, baths, type_clean):
+                elite = 200
                 ongoing = 140
+                try:
+                    print(type(float(sqft)), type(float(beds)), type(float(baths)))
+                except ValueError:
+                    return "Failed"
+
                 try:
                     # These are the base prices that are the minimum cost of cleans
                     try:
                         price_sqft = calc_sqft_price(int(sqft))
                     except ValueError:
                         print("Error Loading Quote")
-                        self.change_button_color("2", True)
+                        self.change_button_color("1", True)
                         body_paragraph = failed(month, username)
                         pyperclip.copy(body_paragraph)
-                    # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
-                    before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
 
-                    # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
-                    if type_clean == 0:
-                        elite = before_price * ot
-                    if type_clean == 1:
-                        elite = before_price * move
-                    if type_clean == 2:
-                        ongoing = before_price * weekly
-                    if type_clean == 3:
-                        ongoing = before_price * biweekly
-                    if type_clean == 4:
-                        ongoing = before_price * monthly
+                    if baths != '':
+                        # On the calculator on excelsheet, "NO TOUCH k9" is the same as "before price"
+                        before_price = float(baths) * 30 + float(beds) * 5 + price_sqft
 
-                    if type_clean == 2 or type_clean == 3 or type_clean == 4:
-                        elite = before_price * initial
-                        if ongoing < 140:
-                            ongoing = 140
-                    if elite < 250:
-                        elite = 250
+                        # ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
+                        dfw_type_clean = type_clean
+                        if type_clean == 0:
+                            elite = before_price * ot
+                        if type_clean == 1:
+                            elite = before_price * move
+                        if type_clean == 2:
+                            ongoing = before_price * weekly
+                        if type_clean == 3:
+                            ongoing = before_price * biweekly
+                        if type_clean == 4:
+                            ongoing = before_price * monthly
+                        if dfw_type_clean >= 1:
+                            dfw_type_clean += 1
 
-                    text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first, username, clean_sqft,
-                                               clean_beds, clean_baths)
+                        # Order of cleanings is switched on the estimator to go OT initial move monthly biweekly week. So i swap the weekly and monthly numbers
+                        if dfw_type_clean == 3:
+                            dfw_type_clean = 5
+                        elif dfw_type_clean == 5:
+                            dfw_type_clean = 3
+
+                        if market == "DFW":
+                            elite = elite * texas_factors[dfw_type_clean]
+
+                        if type_clean == 2 or type_clean == 3 or type_clean == 4:
+                            elite = before_price * initial
+                            if ongoing < 140:
+                                ongoing = 140
+                        if market == "DFW":
+                            ongoing = ongoing * texas_factors[dfw_type_clean]
+                        if elite < 200:
+                            elite = 200
+
+                    pyperclip.copy(f"Lead {name_first} {name_last}")
+                    time.sleep(0.4)
+                    if market == "PDX":
+                        text_info = get_quote_text(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                                   username, clean_sqft,
+                                                   clean_beds, clean_baths)
+                    elif market == "DFW":
+                        text_info = get_quote_text_dfw(month, round(elite), round(ongoing), list_for_scripts,
+                                                       name_first,
+                                                       username, clean_sqft,
+                                                       clean_beds, clean_baths)
                     pyperclip.copy(text_info)
                     time.sleep(0.4)
+
                     if names:
                         title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, name_last, name_first)
-                        pyperclip.copy(title)
-                        time.sleep(0.4)
-                        main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                        # Error handling
+                        if title == "Failed":
+                            print("Error Loading Quotes")
+                            self.change_button_color("1", True)
+                        else:
+                            pyperclip.copy(title)
+                            time.sleep(0.4)
+                            if market == "PDX":
+                                main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                                      username)
+                            elif market == "DFW":
+                                main_info = get_quote_dfw(month, round(elite), round(ongoing), list_for_scripts,
+                                                          name_first,
+                                                          username)
                     else:
                         title = get_title_manual(clean_sqft, clean_beds, clean_baths, list_for_scripts)
                         pyperclip.copy(title)
                         time.sleep(0.4)
-                        main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first, username)
+                        if market == "PDX":
+                            main_info = get_quote(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                                  username)
+                        elif market == "DFW":
+                            main_info = get_quote_dfw(month, round(elite), round(ongoing), list_for_scripts, name_first,
+                                                      username)
                     pyperclip.copy(main_info)
                     print("Quote Complete")
 
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
-                    self.change_button_color("2", True)
+                    self.change_button_color("1", True)
                     body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
                 return elite, ongoing
 
-            scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY"]
+            scripts_choose = ["ONETIME", "MOVE", "WEEKLY", "BIWEEKLY", "MONTHLY", "FAR"]
 
             try:
                 if clean_type != "":
@@ -407,7 +552,7 @@ class MyLayout(Screen):
 
             except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                 print("Error Loading Quote")
-                self.change_button_color("2", True)
+                self.change_button_color("1", True)
                 body_paragraph = failed(month, username)
                 pyperclip.copy(body_paragraph)
 
@@ -429,21 +574,42 @@ class MyLayout(Screen):
 
                 except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
                     print("Error Loading Quote")
-                    self.change_button_color("2", True)
+                    self.change_button_color("1", True)
                     body_paragraph = failed(month, username)
                     pyperclip.copy(body_paragraph)
 
                 return sqft_price
 
-            calc_price(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_first_name, clean_last_name)
+            if calc_price(clean_first_name, clean_last_name, clean_sqft, clean_beds, clean_baths, list_for_scripts) == "Failed":
+                print("Error Loading Quotes")
+                self.change_button_color("1", True)
+                if list_for_scripts != 5:
+                    body_paragraph = failed(month, username)
+                else:
+                    title = get_title(clean_sqft, clean_beds, clean_baths, list_for_scripts, clean_last_name, clean_first_name)
+                    pyperclip.copy(title)
+                    time.sleep(0.4)
+                    body_paragraph = out_of_service_area(username)
+                pyperclip.copy(body_paragraph)
         except ValueError and UnboundLocalError and IndexError and UnboundLocalError:
             print("Error Loading Quote")
-            self.change_button_color("2", True)
+            self.change_button_color("1", True)
             body_paragraph = failed(month, username)
             pyperclip.copy(body_paragraph)
 
 
+class CleanType(Screen):
+    pass
+
+
 class SettingWindow(Screen):
+    if market == "PDX":
+        bg_color = ListProperty([0, 0, 1, 1])
+    else:
+        bg_color = ListProperty([1, 0, 0, 1])
+    title_text = StringProperty("Get PDX Quotes")
+    title_color = ListProperty([0.2, 0.2, 0.9, 1])  # Blueish
+
     def update(self, btn):
         global username
         global comp_mon
@@ -457,7 +623,36 @@ class SettingWindow(Screen):
         except ValueError:
             print("No Monitor Entered")
         print("Updated!")
-    pass
+
+    def update_price_pdx(self, *args):
+        global market
+        market = "PDX"
+
+        # Access MyLayout screen via screen manager
+        main_screen = self.manager.get_screen("main")
+
+
+        main_screen.title_text = "Get PDX Quotes"
+        self.bg_color = [0, 0, 1, 1]  # ✅ not ListProperty(...)
+        main_screen.title_color = [0.2, 0.2, 0.9, 1]
+
+        get_prices_googlesheets(market)
+        print("Updated!")
+
+    def update_price_dfw(self, *args):
+        global market
+        market = "DFW"
+
+        # Access MyLayout screen via screen manager
+        main_screen = self.manager.get_screen("main")
+
+        main_screen.title_text = "Get DFW Quotes"
+        main_screen.title_color = [0.9, 0.2, 0.2, 1]
+        self.bg_color = [1, 0, 0, 1]  # ✅ just assign a new value
+
+        get_prices_googlesheets(market)
+        print("Updated!")
+
 
 
 class WindowManage(ScreenManager):
@@ -470,6 +665,13 @@ comp_mon = int(input("What monitor will you be using? "))
 
 
 class MyApp(App):
+    def change_screen_and_update(self, screen_name, update_value):
+        # Change the screen
+        self.root.current = screen_name
+        # Access the current screen's button and change the text
+        screen = self.root.get_screen(screen_name)
+        screen.ids.type_input.text = update_value
+
     def build(self):
         self.title = 'Leads Quote Generator'
         return kv
